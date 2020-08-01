@@ -4,12 +4,16 @@
   "description": "Back-end para adcom",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon insdex.js"
+    "test": "nodemon index.js"
   },
   "author": "Ebriopes",
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
     "mongoose": "^5.9.26"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.4"
   }
 }
