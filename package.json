@@ -4,12 +4,13 @@
   "description": "Back-end para adcom",
   "main": "index.js",
   "scripts": {
-    "start":"node index.js",
+    "start": "node index.js",
     "test": "nodemon index.js"
   },
   "author": "Ebriopes",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.9.26"
   },

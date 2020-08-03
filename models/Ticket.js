@@ -16,7 +16,6 @@ const ticketSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	build:	String,
 	refer:	String,
 	depto:	Number,
 	folio:	Number,
