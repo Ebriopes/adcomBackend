@@ -4,6 +4,7 @@
   "description": "Back-end para adcom",
   "main": "index.js",
   "scripts": {
+    "start":"node start.js",
     "test": "nodemon index.js"
   },
   "author": "Ebriopes",
