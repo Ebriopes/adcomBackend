@@ -11,7 +11,7 @@ app.use(fileupload({
 	useTempFiles: true,
 	tempPath: '/tmp/'
 }))
-//app.use(cors());
+app.use(cors());
 app.use('/api/v1', router);
 
 app.get('/', (x,res)=> res.status(200).send({message: "All fine"}));
