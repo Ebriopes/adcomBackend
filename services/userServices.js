@@ -1,4 +1,5 @@
-const User = require('../models/User.js');
+const User	= require('../models/User');
+const bcrypt= require('bcrypt') ;
 
 module.exports = {
 	getUsers:	()		=> User.find({is_active:true}),
@@ -10,5 +11,7 @@ module.exports = {
 	updateUser:	(oldBody, body) =>{
 		const newUser = Object.assign(oldBody, body);
 		return newUser.save()
-	}
+	},
+	findByEmail: (email) => User.findOne({email: email}),
+	comparePass: (pass, truePass) => bcrypt.compareSync(pass, truePass),
 };

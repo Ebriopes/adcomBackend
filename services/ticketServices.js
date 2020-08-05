@@ -1,10 +1,10 @@
-const Ticket = require('../models/Ticket.js')
+const Ticket = require('../models/Ticket');
 
 module.exports={
 	getTickets: () => Ticket.find({is_active: true}),
 	getTicket: (id) => Ticket.findById(id),
 	createTicket: (body) => {
-		const ticket = Ticket(body);
+		const ticket = new Ticket(body);
 		return ticket.save();
 	},
 	updateTicket: (body, newBody) =>{

@@ -1,6 +1,6 @@
 const mongoose	= require('mongoose');
 const bcrypt 	= require('bcrypt');
-const SALT 		= process.env.SALT;
+const SALT 		= +process.env.SALT;
 
 const userSchema = mongoose.Schema({
 	name: {
@@ -10,8 +10,10 @@ const userSchema = mongoose.Schema({
 	last_name: String,
 	email: {
 		type: String,
+		required: true,
 		unique: true,
 	},
+	photo: String,
 	password: {
 		type: String,
 		required: true,
@@ -20,6 +22,10 @@ const userSchema = mongoose.Schema({
 	is_active: {
 		type: Boolean,
 		default: true,
+	},
+	is_admin: {
+		type: Boolean,
+		default: false
 	}
 }, {
 	timestamps: true
@@ -27,12 +33,11 @@ const userSchema = mongoose.Schema({
 
 userSchema.pre('save', function (next) {
 	const user = this;
-
 	if (!user.isModified('password')) return next();
-
+	
 	bcrypt.genSalt(SALT, (err, salt) => {
 		if (err) return next(err);
-
+		
 		bcrypt.hash(user.password, salt, (err, hash) => {
 			if(err) return next(err);
 
@@ -42,6 +47,6 @@ userSchema.pre('save', function (next) {
 	})
 })
 
-const User = mongoose.model('User', userSchema);
+const User = new mongoose.model('User', userSchema);
 
 module.exports = User;

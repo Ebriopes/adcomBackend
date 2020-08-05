@@ -2,20 +2,27 @@
   "name": "adcom",
   "version": "1.0.0",
   "description": "Back-end para adcom",
+  "repository": "github.com/ebriopes/adcom",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "nodemon index.js"
+    "test": "jest --verbose --detectOpenHandles ./test --watchAll",
+    "dev": "nodemon -r dotenv/config index.js"
   },
   "author": "Ebriopes",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "cloudinary": "^1.22.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.9",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.26"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
+    "jest": "^26.2.2",
     "nodemon": "^2.0.4"
   }
 }
