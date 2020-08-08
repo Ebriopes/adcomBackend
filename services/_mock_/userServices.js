@@ -4,13 +4,13 @@ function create(body){
 	const keys = ['name', 'email', 'password'];
 
 	const newUser = {
-		id:			'skjfhaslkfh',
-		name: 		'Daniel',
-		last_name:	'Vargas',
-		email: 		'eeeeoh@gmail.com',
-		password: 	'EsoQueEs',
-		phone:		5529397786,
-		is_active:	true,
+		"id":			"skjfhaslkfh",
+		"name": 		"Daniel",
+		"last_name":	"Vargas",
+		"email": 		"eeeeoh@gmail.com",
+		"password": 	"EsoQueEs",
+		"phone":		5529397786,
+		"is_active":	true,
 	}
 
 	const dataBase = new Promise((resolve,reject) => {
