@@ -8,7 +8,7 @@ module.exports = {
 			const {authorization} = req.headers;
 			const [bearer,token] = authorization.split(' ');
 
-			if(!(bearer === 'adcom')) res.status(403).send({message: 'Bad bearer'});
+			if(!(bearer === 'Bearer')) res.status(403).send({message: 'Bad bearer'});
 
 			const decoded = jwt.verify(token, process.env.JWT_SECRET);
 			req.decoded = decoded;

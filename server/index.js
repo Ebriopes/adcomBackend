@@ -14,6 +14,6 @@ app.use(fileupload({
 app.use(cors());
 app.use('/api/v1', router);
 
-app.get('/', (x,res)=> res.status(200).send({message: "All fine"}));
+app.get('/', (_,res)=> res.status(200).send({message: "All fine"}));
 
 module.exports = {app,PORT};

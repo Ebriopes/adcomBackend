@@ -13,12 +13,10 @@ const userSchema = mongoose.Schema({
 		required: true,
 		unique: true,
 	},
-	photo: String,
 	password: {
 		type: String,
 		required: true,
 	},
-	phone: Number,
 	is_active: {
 		type: Boolean,
 		default: true,
@@ -26,7 +24,9 @@ const userSchema = mongoose.Schema({
 	is_admin: {
 		type: Boolean,
 		default: false
-	}
+	},
+	photo: String,
+	phone: Number,
 }, {
 	timestamps: true
 });
