@@ -12,7 +12,7 @@ module.exports ={
 	},
 	getUser: async (req, res) => {
 		try{
-			const user = await userServices.getUser(req.params.id);
+			const user = await userServices.getUser( req.params.id );
 			res.status(200).send(user);
 		}catch (error) {
 			res.status(404).send(error);
