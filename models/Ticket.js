@@ -10,13 +10,10 @@ const ticketSchema = mongoose.Schema({
 		type: Number,
 		required: true,
 	},
-	address:{
-		type: String,
-		required: true,
-	},
+	depto: Number,
 	date:	String,
 	refer:	String,
-	depto: {
+	address: {
 		type: Schema.Types.ObjectId,
 		ref: 'Build',
 		required: true

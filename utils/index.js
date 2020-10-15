@@ -15,4 +15,11 @@ module.exports = {
 			cloudinary.upload()
 		})
 	},
+	treeShake: json => {
+		delete json.is_active;
+		delete json.password;
+		delete json.createdAt;
+		delete json.manager;
+		return json;
+	},
 }

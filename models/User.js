@@ -29,10 +29,10 @@ const userSchema = mongoose.Schema({
 	},
 	photo: String,
 	phone: Number,
-	builds: [ {
+	/* builds: [ {
 		type: Schema.Types.ObjectId,
 		ref: 'Build',
-	} ],
+	} ], */
 }, {
 	timestamps: true
 });

@@ -1,11 +1,12 @@
 const buildService = require( '../services/buildServices' );
 const userService = require( '../services/userServices' );
+const Utils = require( '../utils/index' );
 
 module.exports = {
 	getBuilds: async ( req, res ) => {
 		try {
-			const manager = await userService.getUser( req.params.id );
-			const builds = await buildService.getBuilds( manager._id );
+			const builds = await buildService.getBuilds( req.params.id );
+			builds.map( ( build ) => Utils.treeShake( build._doc ) );
 			res.status( 200 ).send( builds );
 		} catch ( error ) {
 			res.status( 404 ).send( error );
@@ -13,28 +14,20 @@ module.exports = {
 	},
 	getBuild: async ( req, res ) => {
 		try {
-			const manager = await userService.getUser( req.params.id );
-			const response = manager.builds.includes(req.params.build) ?
-				await buildService.getBuild( req.params.build ) :
-				{ message: 'There isn\'t build' };
-			res.status( 200 ).send( response );
-			console.info( response );
+			const build = await buildService.getBuild( req.params.build );
+			Utils.treeShake( build._doc );
+
+			res.status( 200 ).send( build );
 		} catch ( error ) {
 			res.status( 404 ).send( error );
 		}
 	},
 	createBuild: async ( req, res ) => {
 		try {
-			const manager		= await userService.getUser( req.params.id );
-			const build			= await buildService.createBuild( req.body, manager._id );
-			const managerUpdate = {
-				build: build,
-				manager: await userService
-						.updateUser( manager,
-							{ builds: [ ...manager.builds, build._id ] } ),
-			};
+			const build = await buildService.createBuild( req.body, req.params._id );
+			Utils.treeShake( build._doc );
 
-			res.status( 201 ).send( managerUpdate );
+			res.status( 201 ).send( build );
 		} catch ( error ) {
 			res.status( 404 ).send( error );
 		}
@@ -43,6 +36,13 @@ module.exports = {
 		try {
 			const build = await buildService.getBuild( req.params.build );
 			const newBuild = await buildService.updateBuild( build, req.body );
+			Utils.treeShake( newBuild._doc );
+			/* //Code to change manager to a build
+			if ( req.body.manager !== undefined ) {
+				const oldManager = userService.getUser( req.paramas.id );
+				const newManager = userService.getUser( req.body.manager );
+			} */
+			
 			res.status( 202 ).send( {
 				message: 'Build modified',
 				newBuild
@@ -53,22 +53,19 @@ module.exports = {
 	},
 	deleteBuild: async ( req, res ) => {
 		try {
-			const user = await userService.getUser( req.params.id );
-			//user.splice( user.findIndex( req.params.build ), 1 );
-			//const build = await buildService.deleteBuild( req.params.build );
-			//console.info( del );
-			console.info( 'test' );
-			const i = user.builds.indexOf( req.params.build );
-			console.info( user.builds, i );
-			//const response = await del.save();
-			res.status( 202 ).send( { message: 'all fine' } );
-			/* const build = await buildService.getBuild( req.body.build );
-			if(build.is_active === true){
-				await buildService.updateBuild(build, {is_active: false});
-				res.status(200).send({message: "Build burn it"});
+			const build = await buildService.getBuild( req.params.build );
+
+			if ( build.is_active === true && build.manager == req.params.id ) {
+				await buildService.deleteBuild( build );
+	
+				/* const user = await userService.getUser( req.params.id );
+				const i = user.builds.indexOf( req.params.build );
+				user.builds.splice( i, 1 );
+				await user.save(); */
+				res.status( 202 ).send( { message: 'Build burn it' } );
 			}else{
 				res.status(404).send({message: "Build no found"})
-			} */
+			}
 		} catch ( error ) {
 			res.status( 409 ).send( error );
 		}

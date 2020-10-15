@@ -10,17 +10,17 @@ const buildSchema = mongoose.Schema( {
 	address: {
 		type: String,
 		required: true,
+		unique: true,
 	},
-	depto: Number,
 	manager: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
 		required: true,
 	},
-	tickets: [ {
+	/* tickets: [ {
 		type: Schema.Types.ObjectId,
 		ref: 'Ticket',
-	}],
+	}], */
 	is_active: {
 		type: Boolean,
 		default: true,
