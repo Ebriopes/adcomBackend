@@ -11,7 +11,7 @@ module.exports = {
 	},
 	getTicket: async (req, res) => {
 		try {
-			const ticket = await ticketService.getTicket(req.params.id);
+			const ticket = await ticketService.getTicket(req.params.ticket);
 			res.status(200).send(ticket);
 		} catch (error) {
 			res.status(404).send(error);
@@ -27,7 +27,7 @@ module.exports = {
 	},
 	updateTicket: async (req, res) => {
 		try {
-			const ticket = await ticketService.getTicket(req.params.id);
+			const ticket = await ticketService.getTicket(req.params.ticket);
 			const newTicket = await ticketService.updateTicket(ticket, req.body);
 			res.status(202).send({
 				message: 'User modified',
@@ -39,7 +39,7 @@ module.exports = {
 	},
 	deleteTicket: async (req, res) => {
 		try {
-			const ticket = await ticketService.getTicket(req.params.id);
+			const ticket = await ticketService.getTicket(req.params.ticket);
 			if(ticket.is_active === true){
 				await ticketService.updateTicket(ticket, {is_active: false});
 				res.status(200).send({message: "Ticket burn it"});

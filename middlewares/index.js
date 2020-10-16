@@ -6,9 +6,9 @@ module.exports = {
 			if(!req.headers.authorization) res.status(409).send({message: 'Token required'});
 			
 			const {authorization} = req.headers;
-			const [bearer,token] = authorization.split(' ');
+			const [ bearer, token ] = authorization.split( ' ' );
 
-			if(!(bearer === 'Bearer')) res.status(403).send({message: 'Bad bearer'});
+			if( bearer !== 'Bearer' ) res.status(403).send({message: 'Bad bearer'});
 
 			const decoded = jwt.verify(token, process.env.JWT_SECRET);
 			req.decoded = decoded;
@@ -16,5 +16,5 @@ module.exports = {
 		} catch (error) {
 			res.status(403).send(error);
 		}
-	}
+	},
 }
