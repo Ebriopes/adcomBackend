@@ -5,7 +5,7 @@ const Utils = require('../utils/index');
 module.exports = {
 	getBuilds: async (req, res) => {
 		try {
-			const builds = await buildService.getBuilds(req.params.id);
+			const builds = await buildService.getBuilds(req.decoded._id);
 			builds.map((build) => Utils.treeShake(build._doc));
 			res.status(200).send(builds);
 		} catch (error) {
@@ -14,11 +14,19 @@ module.exports = {
 	},
 	getBuild: async (req, res) => {
 		try {
-			const build = await buildService.getBuild(req.params.build);
+			const build = await buildService.getBuild(req.body.build_id);
+
+			if (build.tickets && build.tickets.length > 0)
+				build.tickets.forEach(
+					(ticket, index) =>
+						(build.tickets[index] = Utils.treeShake(ticket._doc))
+				);
+
 			Utils.treeShake(build._doc);
 
 			res.status(200).send(build);
 		} catch (error) {
+			console.log(error);
 			res.status(409).send(error);
 		}
 	},
@@ -26,26 +34,23 @@ module.exports = {
 		try {
 			const build = await buildService.createBuild(
 				req.body,
-				req.params.id
+				req.decoded._id,
+				req.decoded.is_admin
 			);
 
 			Utils.treeShake(build._doc);
 
 			res.status(201).send(build);
 		} catch (error) {
+			console.log(error);
 			res.status(409).send(error);
 		}
 	},
 	updateBuild: async (req, res) => {
 		try {
-			const build = await buildService.getBuild(req.params.build);
+			const build = await buildService.getBuild(req.query.build_id);
 			const newBuild = await buildService.updateBuild(build, req.body);
 			Utils.treeShake(newBuild._doc);
-			/* //Code to change manager to a build
-			if ( req.body.manager !== undefined ) {
-				const oldManager = userService.getUser( req.paramas.id );
-				const newManager = userService.getUser( req.body.manager );
-			} */
 
 			res.status(202).send({
 				message: 'Build modified',
@@ -57,15 +62,14 @@ module.exports = {
 	},
 	deleteBuild: async (req, res) => {
 		try {
-			const build = await buildService.getBuild(req.params.build);
+			const build = await buildService.getBuild(req.body.build_id);
 
-			if (build.is_active === true && build.manager == req.params.id) {
+			if (
+				build.is_active === true &&
+				(build.manager == req.decoded._id || req.decoded.is_admin)
+			) {
 				await buildService.deleteBuild(build);
 
-				/* const user = await userService.getUser( req.params.id );
-				const i = user.builds.indexOf( req.params.build );
-				user.builds.splice( i, 1 );
-				await user.save(); */
 				res.status(202).send({ message: 'Build burn it' });
 			} else {
 				res.status(404).send({ message: 'Build no found' });

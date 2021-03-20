@@ -1,21 +1,19 @@
-const User	= require('../models/User');
-const bcrypt= require('bcrypt') ;
+const User = require('../models/User');
 
 module.exports = {
-	getUsers: () => User.find( { is_active: true } ),
-	getUser: ( id ) => User.findById( id ),
-	createUser:	(body)	=> {
+	getUsers: () => User.find({ is_active: true }),
+	getUser: (id) => User.findById(id),
+	createUser: (body) => {
 		const user = User(body);
 		return user.save();
 	},
-	updateUser:	(oldBody, body) =>{
+	updateUser: (oldBody, body) => {
 		const newUser = Object.assign(oldBody, body);
-		return newUser.save()
+		return newUser.save();
 	},
 	/* addBuild: ( user, idBuild ) => {
 		user.builds.push( idBuild )
 		return user.save()
 	}, */
-	findByEmail: (email) => User.findOne({email: email}),
-	comparePass: (pass, truePass) => bcrypt.compareSync(pass, truePass),
+	findByEmail: (email) => User.findOne({ email: email }),
 };

@@ -2,12 +2,14 @@ const Build = require('../models/Build');
 
 module.exports = {
 	getBuilds: (id) => Build.find({ is_active: true, manager: id }),
-	getBuild: (id) => Build.findById(id),
-	createBuild: async (body, user) => {
+	getBuild: (id) => Build.findById(id).populate('tickets'),
+	createBuild: async (body, user, admin) => {
 		const exists = await Build.exists({ address: body.address });
-		if (exists) {
+		if (exists && admin && body.name) {
 			const inactive = await Build.findOne({ address: body.address });
 			inactive.is_active = true;
+			inactive.address = body.address;
+			inactive.name = body.name;
 			inactive.manager = user;
 			return inactive.save();
 		}
