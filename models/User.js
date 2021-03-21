@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-//const Schema	= mongoose.Schema;
+const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const SALT = +process.env.SALT;
 
@@ -29,10 +29,12 @@ const userSchema = mongoose.Schema(
 		},
 		photo: String,
 		phone: Number,
-		/* builds: [ {
-		type: Schema.Types.ObjectId,
-		ref: 'Build',
-	} ], */
+		builds: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Build',
+			},
+		],
 	},
 	{
 		timestamps: true,

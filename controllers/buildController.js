@@ -6,23 +6,14 @@ module.exports = {
 	getBuilds: async (req, res) => {
 		try {
 			const builds = await buildService.getBuilds(req.decoded._id);
-			builds.map((build) => Utils.treeShake(build._doc));
 			res.status(200).send(builds);
 		} catch (error) {
-			res.status(409).send(error);
+			res.status(500).send(error);
 		}
 	},
 	getBuild: async (req, res) => {
 		try {
 			const build = await buildService.getBuild(req.body.build_id);
-
-			if (build.tickets && build.tickets.length > 0)
-				build.tickets.forEach(
-					(ticket, index) =>
-						(build.tickets[index] = Utils.treeShake(ticket._doc))
-				);
-
-			Utils.treeShake(build._doc);
 
 			res.status(200).send(build);
 		} catch (error) {
@@ -38,7 +29,10 @@ module.exports = {
 				req.decoded.is_admin
 			);
 
-			Utils.treeShake(build._doc);
+			const user = await userService.getUser(req.decoded._id)
+
+			user.builds.push(build._id)
+			await user.save()
 
 			res.status(201).send(build);
 		} catch (error) {
@@ -50,7 +44,6 @@ module.exports = {
 		try {
 			const build = await buildService.getBuild(req.query.build_id);
 			const newBuild = await buildService.updateBuild(build, req.body);
-			Utils.treeShake(newBuild._doc);
 
 			res.status(202).send({
 				message: 'Build modified',

@@ -2,7 +2,7 @@ const Build = require('../models/Build');
 
 module.exports = {
 	getBuilds: (id) => Build.find({ is_active: true, manager: id }),
-	getBuild: (id) => Build.findById(id).populate('tickets'),
+	getBuild: (id) => Build.findById(id,'-__v').populate('tickets', '-__v'),
 	createBuild: async (body, user, admin) => {
 		const exists = await Build.exists({ address: body.address });
 		if (exists && admin && body.name) {

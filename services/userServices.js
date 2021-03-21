@@ -2,7 +2,9 @@ const User = require('../models/User');
 
 module.exports = {
 	getUsers: () => User.find({ is_active: true }),
-	getUser: (id) => User.findById(id),
+	getUser: (id, fields, populate) =>
+		User.findById(id,fields)
+			.populate(populate ? 'builds' : null),
 	createUser: (body) => {
 		const user = User(body);
 		return user.save();
@@ -15,5 +17,5 @@ module.exports = {
 		user.builds.push( idBuild )
 		return user.save()
 	}, */
-	findByEmail: (email) => User.findOne({ email: email }),
+	findByEmail: (email, fields) => User.findOne({ email }).select(fields),
 };

@@ -6,7 +6,6 @@ module.exports = {
 		try {
 			if (req.decoded.is_admin) {
 				const users = await userServices.getUsers();
-				users.map((user) => Utils.treeShake(user._doc));
 				res.status(200).send(users);
 			} else res.status(409).send({ message: 'Insufficent privileges' });
 		} catch (error) {
@@ -15,8 +14,11 @@ module.exports = {
 	},
 	getUser: async (req, res) => {
 		try {
-			const user = await userServices.getUser(req.decoded._id);
-			Utils.treeShake(user._doc);
+			const user = await userServices.getUser(
+				req.decoded._id,
+				'-is_active -is_admin -password -createdAt -updatedAt -__v',
+				true
+			);
 
 			res.status(200).send(user);
 		} catch (error) {
@@ -25,11 +27,29 @@ module.exports = {
 	},
 	createUser: async (req, res) => {
 		try {
-			const user = await userServices.createUser(req.body);
-			Utils.treeShake(user._doc);
-			res.status(201).send(user);
+			const existUser = await userServices.findByEmail(req.body.email);
+			if (existUser) {
+				res.status(400).send('This email already exists');
+				return;
+			} else {
+				admin =
+					req.decoded && req.decoded.is_admin && req.body.is_admin;
+				const user = await userServices.createUser({
+					...req.body,
+					is_admin: admin,
+				});
+				res.status(201).send(
+					await userServices
+						.getUser(user._id)
+						.select(
+							'-is_active -is_admin -password -updatedAt -__v'
+						)
+				);
+				return;
+			}
 		} catch (error) {
-			res.status(401).send(error);
+			console.log(error);
+			res.status(500).send(error);
 		}
 	},
 	updateUser: async (req, res) => {
@@ -41,7 +61,6 @@ module.exports = {
 		try {
 			const user = await userServices.getUser(req.decoded._id);
 			const newUser = await userServices.updateUser(user, req.body);
-			Utils.treeShake(newUser._doc);
 			res.status(200).send(newUser);
 		} catch (error) {
 			res.status(409).send(error);
@@ -60,17 +79,32 @@ module.exports = {
 	},
 	login: async (req, res) => {
 		try {
-			const { password, email } = Utils.loginToken(req.body.login);
+			const { password, email } = req.body;
 
-			const user = await userServices.findByEmail(email);
+			const serverData = await userServices.findByEmail(
+				email,
+				'password -_id'
+			);
 
-			if (!user) res.status(409).send({ message: 'Data incorrect' });
+			if (!serverData) {
+				res.status(409).send({ message: 'Data incorrect' });
+				return;
+			}
 
-			const isMatch = await Utils.comparePass(password, user.password);
+			const isMatch = await Utils.comparePass(
+				password,
+				serverData.password
+			);
 
-			if (!isMatch) res.status(409).send({ message: 'Data incorrect' });
+			if (!isMatch) {
+				res.status(409).send({ message: 'Data incorrect' });
+				return;
+			}
 
-			Utils.treeShake(user._doc);
+			const user = await userServices.findByEmail(
+				email,
+				'-__v -is_active -createdAt -updatedAt -password'
+			);
 
 			const payload = { ...user._doc };
 
@@ -78,8 +112,8 @@ module.exports = {
 
 			res.status(200).send({ token });
 		} catch (error) {
-			console.log(error);
-			res.status(500).send(error);
+			console.log(500);
+			res.status(500).send({ error });
 		}
 	},
 };

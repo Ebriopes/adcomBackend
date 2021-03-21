@@ -31,8 +31,6 @@ module.exports = {
 				build: build._id,
 			});
 
-			utils.treeShake(ticket._doc);
-
 			build.tickets.push(ticket._id);
 
 			await build.save();
