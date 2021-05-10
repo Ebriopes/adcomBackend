@@ -24,10 +24,14 @@ module.exports = {
 	createTicket: async (req, res) => {
 		try {
 			const build = await buildService.getBuild(req.query.build_id);
+			const tickets = await ticketService.getTickets(req.decoded._id,req.query.build_id);
+			const folio = tickets.filter(ticket => ticket.depto === req.body.depto).length + 1
+
 			const ticket = await ticketService.createTicket({
 				...req.body,
 				manager: req.decoded._id,
 				build: build._id,
+				folio
 			});
 
 			build.tickets.push(ticket._id);
