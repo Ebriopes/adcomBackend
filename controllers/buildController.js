@@ -1,6 +1,5 @@
 const buildService = require('../services/buildServices');
 const userService = require('../services/userServices');
-const Utils = require('../utils/index');
 
 module.exports = {
 	getBuilds: async (req, res) => {

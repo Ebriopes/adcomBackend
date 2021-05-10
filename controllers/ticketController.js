@@ -1,6 +1,5 @@
 const ticketService = require('../services/ticketServices');
 const buildService = require('../services/buildServices');
-const utils = require('../utils');
 
 module.exports = {
 	getTickets: async (req, res) => {

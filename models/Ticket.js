@@ -26,7 +26,7 @@ const ticketSchema = mongoose.Schema(
 		refer: String,
 		address: String,
 		folio: Number,
-		concep: String,
+		concept: String,
 		type: String,
 		payment: String,
 		is_active: {
