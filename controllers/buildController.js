@@ -54,7 +54,7 @@ module.exports = {
 	},
 	deleteBuild: async (req, res) => {
 		try {
-			const build = await buildService.getBuild(req.body.build_id);
+			const build = await buildService.getBuild(req.query.build_id);
 
 			if (
 				build.is_active === true &&
